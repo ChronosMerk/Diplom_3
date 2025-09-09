@@ -7,5 +7,6 @@ class URL:
     REGISTER_PAGE = f'{BASE_URL}/register'
     FORGOT_PASSWORD_PAGE = f'{BASE_URL}/forgot-password'
     RESET_PASSWORD_PAGE = f'{BASE_URL}/reset-password'
+    ORDER_HISTORY = f'{BASE_URL}/account/order-history'
 
 
