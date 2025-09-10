@@ -1,6 +1,7 @@
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.action_chains import ActionChains
 from locators.general_locators import GeneralLocators
 
 class BasePage:
@@ -61,3 +62,62 @@ class BasePage:
 
     def wait_for_visibility(self, locator):
         return self.wait.until(ec.visibility_of_element_located(locator))
+
+    def drag_and_drop_smart(self, source_locator, target_locator):
+        source = self.driver.find_element(*source_locator)
+        target = self.driver.find_element(*target_locator)
+        browser_name = self.driver.capabilities.get("browserName", "").lower()
+
+        if browser_name == "firefox":
+            # Старый скрипт для Firefox (работает стабильно)
+            drag_and_drop_script = """
+                function simulateDragDrop(sourceNode, destinationNode) {
+                    var EVENT_TYPES = {
+                        DRAG_END: 'dragend',
+                        DRAG_START: 'dragstart',
+                        DROP: 'drop'
+                    }
+
+                    function createCustomEvent(type) {
+                        var event = new CustomEvent("CustomEvent")
+                        event.initCustomEvent(type, true, true, null)
+                        event.dataTransfer = {
+                            data: {},
+                            setData: function(type, val) {
+                                this.data[type] = val
+                            },
+                            getData: function(type) {
+                                return this.data[type]
+                            }
+                        }
+                        return event
+                    }
+
+                    function dispatchEvent(node, type, event) {
+                        if (node.dispatchEvent) {
+                            return node.dispatchEvent(event)
+                        }
+                        if (node.fireEvent) {
+                            return node.fireEvent("on" + type, event)
+                        }
+                    }
+
+                    var event = createCustomEvent(EVENT_TYPES.DRAG_START)
+                    dispatchEvent(sourceNode, EVENT_TYPES.DRAG_START, event)
+
+                    var dropEvent = createCustomEvent(EVENT_TYPES.DROP)
+                    dropEvent.dataTransfer = event.dataTransfer
+                    dispatchEvent(destinationNode, EVENT_TYPES.DROP, dropEvent)
+
+                    var dragEndEvent = createCustomEvent(EVENT_TYPES.DRAG_END)
+                    dragEndEvent.dataTransfer = event.dataTransfer
+                    dispatchEvent(sourceNode, EVENT_TYPES.DRAG_END, dragEndEvent)
+                }
+
+                simulateDragDrop(arguments[0], arguments[1])
+            """
+            self.driver.execute_script(drag_and_drop_script, source, target)
+
+        else:
+            actions = ActionChains(self.driver)
+            actions.click_and_hold(source).move_to_element(target).pause(0.3).release().perform()
