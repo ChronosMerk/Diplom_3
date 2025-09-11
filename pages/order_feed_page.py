@@ -36,8 +36,7 @@ class OrderFeedPage(BasePage):
     @allure.step('Поиск заказа в ленте заказов')
     def search_order(self, number_order):
         xpath = OrderFeedLocators.SEARCH_ORDER_LOCATOR.replace("{number}", number_order)
-        self.wait_for_visibility((By.XPATH, xpath))
-        return self.get_text_from_element(xpath)
+        return self.wait_for_visibility((By.XPATH, xpath))
 
     @allure.step('Получение количества заказов из поля "Выполнено за все время:"')
     def get_completed_for_all_time(self):
