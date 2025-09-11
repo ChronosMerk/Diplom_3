@@ -13,4 +13,5 @@ class MainPageLocators:
     COUNTER_BUN = By.XPATH, "(//a[@class = 'BurgerIngredient_ingredient__1TVf6 ml-4 mr-4 mb-8'])[1]//p[@class = 'counter_counter__num__3nue1']"
     CREATE_ORDER_BUTTON = By.XPATH, '//button[text() = "Оформить заказ"]'
     ORDER_LOCATOR = By.XPATH, "//p[text()= 'идентификатор заказа']"
+    NUMBER_CREATE_ORDER_LOCATOR = By.XPATH, "//h2[@class = 'Modal_modal__title_shadow__3ikwq Modal_modal__title__2L34m text text_type_digits-large mb-8']"
 

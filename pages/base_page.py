@@ -69,7 +69,6 @@ class BasePage:
         browser_name = self.driver.capabilities.get("browserName", "").lower()
 
         if browser_name == "firefox":
-            # Старый скрипт для Firefox (работает стабильно)
             drag_and_drop_script = """
                 function simulateDragDrop(sourceNode, destinationNode) {
                     var EVENT_TYPES = {
